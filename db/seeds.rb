@@ -7,19 +7,16 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 cats = [
   {
-    id: 1,
     name: "Mittens",
     age: 5,
     enjoys: "sunshine and warm spots"
   },
   {
-    id: 2,
     name: "Raisins",
     age: 4,
     enjoys: "being queen of the dogs"
   },
   {
-    id: 3,
     name: "Toast",
     age: 1,
     enjoys: "getting all the attention"
