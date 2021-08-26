@@ -3,13 +3,19 @@ class CatsController < ApplicationController
         cats = Cat.all
         render json: cats
     end
-    
-    def create 
+
+    def create
         cat = Cat.create(cat_params)
-        render json: cat
+        if cat.valid?
+          render json: cat
+        else
+          render json: {
+            error: 'Invalid parameters for cat object'
+          }, status: :unprocessable_entity
+        end
     end
 
-    def update 
+    def update
         cat = Cat.find(params[:id])
         cat.update(cat_params)
         render json: cat
@@ -21,7 +27,7 @@ class CatsController < ApplicationController
         render json: cat
     end
 
-    private 
+    private
     def cat_params
         params.require(:cat).permit(:name, :age, :enjoys)
     end
