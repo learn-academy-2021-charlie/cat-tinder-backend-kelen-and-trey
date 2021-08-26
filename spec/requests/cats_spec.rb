@@ -22,22 +22,24 @@ RSpec.describe "Cats", type: :request do
       enjoys: "getting all the attention"
     })
   }
+
   before do
     cat_1
     cat_2
     cat_3
-  end 
+  end
+
   describe "GET /index" do
     it 'gets a list of cats' do
-      get "/cats" 
+      get "/cats"
       expect(response.status).to eq 200
       expect(JSON.parse(response.body).length).to eq 3
     end
   end
-  
+
   describe "POST /create" do
-    let (:request) { 
-      post "/cats", params: { 
+    let (:request) {
+      post "/cats", params: {
         cat: {
           name: "fluffy butters",
           age: 190,
@@ -56,7 +58,7 @@ RSpec.describe "Cats", type: :request do
   end
 
   describe 'PATCH /update' do
-    let (:request) { 
+    let (:request) {
       patch "/cats/#{cat_1.id}", params: {
         cat: {
           name: "Fluffy B. Starfish"
@@ -69,6 +71,7 @@ RSpec.describe "Cats", type: :request do
       expect(response.status).to eq 200
     end
   end
+
   describe 'DELETE /destroy' do
     let (:request) {
       delete "/cats/#{cat_1.id}"
@@ -76,6 +79,53 @@ RSpec.describe "Cats", type: :request do
     it 'deletes cat_1' do
       expect{request}.to change {Cat.count}.by -1
       expect(response.status).to eq 200
+    end
+  end
+
+  describe 'request validations' do
+    it 'throws an error with empty name' do
+      request = {
+        cat: {
+          name: '',
+          age: 5,
+          enjoys: 'valid strings'
+        }
+      }
+      post '/cats', params: request
+      expect(response.status).to eq 422
+    end
+    it 'throws error with empty age' do
+      request = {
+        cat: {
+          name: 'valid string',
+          age: '',
+          enjoys: 'valid strings'
+        }
+      }
+      post '/cats', params: request
+      expect(response.status).to eq 422
+    end
+    it 'throws error with empty enjoys' do
+      request = {
+        cat: {
+          name: 'valid string',
+          age: 10,
+          enjoys: ''
+        }
+      }
+      post '/cats', params: request
+      expect(response.status).to eq 422
+    end
+    it 'throws error for enjoys with length less than 10' do
+      request = {
+        cat: {
+          name: 'valid name',
+          age: 10,
+          enjoys: 'four'
+        }
+      }
+      post '/cats', params: request
+      expect(response.status).to eq 422
     end
   end
 end
